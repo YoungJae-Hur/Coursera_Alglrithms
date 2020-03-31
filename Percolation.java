@@ -7,7 +7,9 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private boolean [][] grid;
     private WeightedQuickUnionUF qu;
+    private WeightedQuickUnionUF qu2;
     private int lm; // length of matrix
+    private int numOpenSites;
 
     // creates n-by-n grid, with all sites initially blocked. 0 = closed, 1= open
     private Percolation(int n) {
@@ -33,6 +35,9 @@ public class Percolation {
             if(!isOpen(row, col)){
                 grid[row][col] = true;
             }
+            if(row == 1){
+                qu.union(col-1, lm*lm);
+            }
         }else{
             throw new IndexOutOfBoundsException("error1");
         }
@@ -54,17 +59,22 @@ public class Percolation {
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
+        if(checkValidIndex(row,col)){
+            qu2.connected(row*lm+col,0);
+        }else{
+            throw new IndexOutOfBoundsException("error3");
+        }
         return false;
     }
 
     // returns the number of open sites
     public int numberOfOpenSites() {
-        return 0;
+        return numOpenSites;
     }
 
     // does the system percolate?
     public boolean percolates() {
-        return false;
+        return qu.connected(lm*lm, lm*lm+1);
     }
 
     // test client (optional)
